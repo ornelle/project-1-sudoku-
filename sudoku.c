@@ -86,10 +86,37 @@ void addGuess(int start[9][9], int sudoku[9][9], int r, int c, int guess){
 }
 
 
-void getAllowedValues(int sudoku[9][9], int r, int c){
+bool getAllowedValues(int sudoku[9][9], int r, int c, int number){
 
 	//returns numbers that are allowed in the chosen square
-	//check c, check r, check box
+	bool fal= false;
+  	bool x= true;
+	//returns numbers that are allowed in the chosen square? 
+
+	//checks row,
+  	for(int i=0; i<9; i++){
+    		if(sudoku[row][i]==number)
+      	return fal;
+  	}
+  
+  	//checks column, 
+  	for(int i=0; i<9; i++){
+    		if (sudoku[i][col]==number)
+      		return fal;
+  	}
+
+  	//checks box
+  	int startR = row -(row % 3);
+  	int startC = col- (col % 3);
+    	//actual logic for checking
+  	for( int co= startC; co<startC+3; co++) {
+    		for (int ro = startR; ro <startR + 3; ro++) {
+      			if (sudoku[ro][co] == number) {
+          			return fal;
+          			}		
+      			}
+    	}
+  	return x;
 }
 
  void reset(int start[9][9], int sudoku[9][9]){
