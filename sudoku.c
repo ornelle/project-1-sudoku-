@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <time.h>
 
 int rows = 9;
 int columns = 9;
@@ -33,6 +35,42 @@ int getValue(int sudoku[9][9], int r, int c){
 void addInitialValue(int sudoku[9][9], int r, int c, const int value){
 	sudoku[r][c] = value;
 }
+
+bool fillinBoard(int row, int col){
+	/* if attempting the extra credit this creates a randomize sudoku puzzle using recursion */ 
+        //^^above will pass in 0,0 to START
+	
+        //BASE CASE: controls recursions
+        if(row>8)
+            return true;
+        //generates new int
+        int randomNum = rand()% 10; // returns a random int between 0-9
+
+        //go to next row if your column is full
+        if(col>8)
+            return fillinBoard(row+1, 0);
+        //9 possible attempts
+        for(int i=0; i<9; i++) {
+            if (canDo(row, col, randomNum)) {
+                //if board is empty it'll insert it in if no
+                board[row][col] = randomNum;
+                if (fillinBoard(row, col + 1))
+                    //if returned true it goes back to base case!!!!
+                    return true;
+            }
+            randomNum++;
+            //checks other possible ints at that point on board
+            if(randomNum>9)
+                randomNum=1;
+            /* ^goes back to next for loop and trys all the numbers that came prior to randomNum */
+
+        }
+        //BACK TRACKS: if all attempts at that point has not worked
+        //what false are we returning didnt work at all?
+        board[row][col]=0;
+        return false;
+
+    }
 
 int checkPuzzle(int r, int c, int guess){
 	int valid = 0;
@@ -134,7 +172,8 @@ bool getAllowedValues(int sudoku[9][9], int r, int c, int number){
 int main(){
 	int empty, choice;
 	int userRow, userCol, userValue;
-
+	
+	srand(time(0)); //seed for random generator
 	int start[9][9];
 	int sudoku[9][9] = {{0, 7, 3,   0, 0, 0,   8, 0, 0},
 						{0, 0, 4,   1, 3, 0,   0, 5, 0},
