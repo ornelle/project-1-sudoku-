@@ -44,7 +44,7 @@ int fillinBoard(int sudoku[9][9], int row, int col){
 		++row;
 	}
 	if(row>=9){
-		display(sudoku);
+		//display(sudoku);
 		return true;
 	}
 	int randomN= (rand() % 9)+1;
@@ -61,22 +61,9 @@ int fillinBoard(int sudoku[9][9], int row, int col){
 	return false;
 }
 
-int checkPuzzle(int r, int c, int guess){
+int checkPuzzle(int sudoku[9][9], int r, int c, int guess){
 	int valid = 0;
-	int solved[9][9] = {{1, 7, 3,   5, 2, 9,   8, 6, 4},
-						{6, 9, 4,   1, 3, 8,   7, 5, 2},
-						{2, 8, 5,   4, 7, 6,   3, 1, 9},
-
-						{5, 6, 7,   2, 9, 4,   1, 3, 8},
-						{4, 2, 8,   7, 1, 3,   5, 9, 6},
-						{3, 1, 9,   8, 6, 5,   4, 2, 7},
-
-						{9, 5, 1,   6, 4, 7,   2, 8, 3},
-						{8, 4, 6,   3, 5, 2,   9, 7, 1},
-						{7, 3, 2,   9, 8, 1,   6, 4, 5}};
-
-
-	if (solved[r][c] == guess){
+	if (sudoku[r][c] == guess){
 		valid++;
 		return valid;
 	} else {
@@ -101,23 +88,16 @@ int isStillEmpty(int sudoku[9][9]){
 void addGuess(int start[9][9], int sudoku[9][9], int r, int c, int guess){
 	if (sudoku[r][c] == 0){
 		if(isStillEmpty(sudoku)){
-			if(checkPuzzle(r, c, guess)){
+			if(checkPuzzle(sudoku, r, c, guess)){
 				sudoku[r][c] = guess;
-			} else {
-				printf("Invalid input: you cannot change this initial value.\n");
-			}
+			} 
 		} else {
-			printf("Game over - you win!\n");
+			printf("You win!\n");
 		}
 	}
 }
 
-
 bool getAllowedValues(int sudoku[9][9], int row, int col, int number){
-
-	//returns numbers that are allowed in the chosen square
-	//bool fal= false;
-  	//bool x= true;
 
 	//checks row,
   	for(int i=0; i<9; i++){
@@ -187,7 +167,7 @@ int main(){
 	while (keepPlaying == 0){
 		printf("\nWhat would you like to do?\n(1) Add a guess\n"
 			"(2) Display the current board\n(3) Reset "
-			"the game\n(4) Exit\n");
+			"the game\n(4) Start another game\n(5) Exit\n");
 		scanf("%d", &choice);
 		printf("choice is %d\n", choice);
 
@@ -211,8 +191,19 @@ int main(){
 				//returns same board
 				break;
 			case 4:
+				createEmptyBoard(sudoku);
+				fillinBoard(sudoku, 0, 0);
+				for(int i=0; i< rows; i++){
+					for(int j=0; j< columns; j++){
+						start[i][j]= 1;
+					}
+				}
+				reset(start, sudoku);
+				break;
+			case 5:
 				keepPlaying++;
 				break;
+
 			default:
 				printf("Invalid input.\n");
 		}
