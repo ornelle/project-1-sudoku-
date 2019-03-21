@@ -33,46 +33,34 @@ int getValue(int sudoku[9][9], int r, int c){
 	return value;
 }
 
-void addInitialValue(int sudoku[9][9], int r, int c, const int value){
+int addInitialValue(int sudoku[9][9], int r, int c, const int value){
 	sudoku[r][c] = value;
+	return true;
 }
 
-void fillinBoard(int sudoku[9][9], int row, int col){
-	/* if attempting the extra credit this creates a randomize sudoku puzzle using recursion */ 
-        //^^above will pass in 0,0 to START
-	int randomN;
-	for(int r = 0; r < 9; r++) {
-		for (int c = 0; c < 9; c++) {
-			randomN= (rand() % 9)+1;
-			// srand(time(0));
-			if(getAllowedValues(sudoku, r, c, randomN)){
-				if (randomN!=0)
-					sudoku[r][c]=randomN;
-			}
-			//makeshift while loop: if position is not good go back to it & try again
-			else{
-				randomN=9;
-				//printf("%d\n", randomN );
-				while(!getAllowedValues(sudoku, r, c, randomN)){
-					printf("%d\n valuee\n", randomN);
-					--randomN;
-				}
-				if (randomN>0)
-					sudoku[r][c]=randomN;
-				if (sudoku[r][c]==0){
-					for(int i=0; i<9; i++){
-						if(getAllowedValues(sudoku, r, c, i))
-							sudoku[r][c]=i;
-						display(sudoku);
-					}
-				}		
-
-			}
+int fillinBoard(int sudoku[9][9], int row, int col){
+	if(col>=9){
+		col=0;
+		++row;
+	}
+	if(row>=9){
+		display(sudoku);
+		return true;
+	}
+	int randomN= (rand() % 9)+1;
+	for(int i =0;i<9;i++){
+		 randomN=randomN+1;
+		if(randomN>9){
+			randomN=1;
 		}
-
-    }
-
+		if(getAllowedValues(sudoku, row, col, randomN)&&addInitialValue(sudoku,row,col,randomN)&&fillinBoard(sudoku,row,col+1)){
+			return true;
+		}
+		sudoku[row][col]=0;
+	}
+	return false;
 }
+
 int checkPuzzle(int r, int c, int guess){
 	int valid = 0;
 	int solved[9][9] = {{1, 7, 3,   5, 2, 9,   8, 6, 4},
